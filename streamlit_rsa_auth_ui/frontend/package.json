@@ -1,12 +1,12 @@
 {
-    "name": "ssl_auth_ui",
+    "name": "rsa_auth_ui",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "antd": "^5.15.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "streamlit-component-lib": "^2.0.0"
+        "streamlit-component-lib": "^2.0.0",
+        "antd": "^5.15.1"
     },
     "scripts": {
         "start": "react-scripts start",

@@ -1,34 +1,37 @@
-import rsa
-import base64
 import streamlit as st
-from streamlit_ssl_auth_ui import LoginForm
-from streamlit_ssl_auth_ui.util import generateKeyPair
+from streamlit_rsa_auth_ui import Encryptor, SigninEvent, getEvent, signinForm, signoutForm
+ss = st.session_state
 
 
-with open('ssh/key', 'rb') as f:
-    bytes = f.read()
-    privateKey = bytes.decode()
-    print(privateKey)
+encryptor = Encryptor.load('rsa', 'key')
 
-with open('ssh/key.pub', 'rb') as f:
-    bytes = f.read()
-    publicKey = bytes.decode()
-    print(publicKey)
+def checkAuth(username: str, password: str):
+    return username == 'test' and password == 'New.Prog'
 
-def decrypt(encrypted: str):
-    key = rsa.PrivateKey.load_pkcs1(privateKey.encode())
-    return rsa.decrypt(encrypted.encode(), key)
+def login():
+    if 'event' in ss and type(ss.event) is SigninEvent: return True
+    result = signinForm(encryptor.publicKeyPem, default={'remember': True}, configs={'remember': {}})
+    if result is None: return False
+    if 'result' in ss and ss['result'] == result: return False
 
-# with st.sidebar:
-values = LoginForm(privateKey=privateKey, publicKey = publicKey)
-print()
-print(values)
-try:
-    password: str = values['password']
-    base64_bytes = password.encode()
-    bytes = base64.b64decode(base64_bytes)
-    key = rsa.PrivateKey.load_pkcs1(privateKey.encode())
-    values['password'] = rsa.decrypt(bytes, key).decode()
-    print(values)
-except: pass
-finally: pass
+    ss['result'] = result
+    _dict = encryptor.decrypt(result)
+    event = getEvent(_dict)
+    if type(event) is not SigninEvent or not checkAuth(event.username, event.password): return False
+    ss['event'] = event
+    del ss['result']
+    st.rerun()
+
+def logout():
+    result = signoutForm(encryptor.publicKeyPem)
+    if result is None: return False
+    _dict = encryptor.decrypt(result)
+    event = getEvent(_dict)
+    ss['event'] = event
+    return True
+
+if not login(): st.stop()
+if logout(): st.rerun()
+
+st.title('Streamlit Rsa Auth UI Test')
+st.button('test')
