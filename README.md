@@ -20,7 +20,7 @@ If you want to deploy streamlit server using http protocol (not https protocol) 
 ### What is RSA algorithm
 It is [asymmetric cryptography](https://www.techtarget.com/searchsecurity/definition/asymmetric-cryptography), uses two different but mathematically linked [keys](https://www.techtarget.com/searchsecurity/definition/key)
 - [Public key](https://www.techtarget.com/searchsecurity/definition/public-key) that can be share with everyone
-- [Private key](https://www.techtarget.com/searchsecurity/definition/private-key) mus be kept secret
+- [Private key](https://www.techtarget.com/searchsecurity/definition/private-key) must be kept secret
 
 ## Installation
 Open a terminal and run:

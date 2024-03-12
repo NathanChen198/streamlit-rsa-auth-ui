@@ -1,1 +1,1 @@
-recursive-include streamlit-rsa-auth-ui/frontend/build *
+recursive-include streamlit_rsa_auth_ui/frontend/build *
