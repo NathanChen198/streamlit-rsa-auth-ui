@@ -107,6 +107,12 @@ streamlit run example.py
 ## Change Log
 ### Version 0.0.1
 - Initial release
+### Version 0.0.2
+- Fix missing frontend issue
+### Version 0.0.3
+- Optional 'cancel' button to signoutform
+- Minor bug fixed
+- Remove bootstrap.min.css warning
 
 
 [pypi_badge]: https://img.shields.io/pypi/v/streamlit-rsa-auth-ui.svg

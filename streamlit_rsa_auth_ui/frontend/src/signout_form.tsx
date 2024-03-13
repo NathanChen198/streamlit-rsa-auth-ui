@@ -19,15 +19,17 @@ const { Title } = Typography
 
 interface Configs extends FormConfig {
   signout: ButtonConfig
+  cancel: ButtonConfig | undefined
   title: TitleConfig | undefined
 }
 const getConfigs = (configs: any): Configs => {
   configs = getConfig(configs)
-  const {signout, title, ...form} = {...configs} as Configs
+  const {signout, cancel, title, ...form} = {...configs} as Configs
 
   const formConfigs = getFormConfig(form)
   return {
     signout: getButtonConfig(signout, '🔐 Sign Out'),
+    cancel: cancel ? getButtonConfig(cancel, 'Cancel') : undefined,
     title: title ? getTitleConfig(title, "Welcome") : undefined,
     ...formConfigs
   }
@@ -46,8 +48,13 @@ export default class SignoutForm extends BaseForm{
     this.setComponentValue(event)
   }
 
+  private onCancel: FormProps['onClick'] = () => {
+    const event = {'event': 'cancelSignout'}
+    this.setComponentValue(event)
+  }
+
   getForm(): React.ReactNode {
-    const {signout, title, ...form} = this.configs
+    const {signout, cancel, title, ...form} = this.configs
     return(
       <Form
         name='signout'
@@ -64,6 +71,13 @@ export default class SignoutForm extends BaseForm{
           <Form.Item>
             <Button type='primary' htmlType='submit' {...signout.props}>{signout.label}</Button>
           </Form.Item>
+
+          {
+            cancel &&
+            <Form.Item>
+              <Button onClick={this.onCancel} {...cancel.props}>{cancel.label}</Button>
+            </Form.Item>
+          }
         </Space>
       </Form>
     )

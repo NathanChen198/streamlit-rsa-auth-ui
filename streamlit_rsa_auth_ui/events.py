@@ -25,30 +25,37 @@ class SigninEvent(Event):
         super().__init__('signin')
 
 class CancelSigninEvent(Event):
+    event: EventInfo = 'cancelSignin'
+
     def __init__(self) -> None:
         super().__init__('cancelSignin')
 
 class SignoutEvent(Event):
+    event: EventInfo = 'signout'
+
     def __init__(self) -> None:
         super().__init__('signout')
 
 class CancelSignoutEvent(Event):
+    event: EventInfo = 'cancelSignout'
+
     def __init__(self) -> None:
         super().__init__('cancelSignout')
 
 
 def getEvent(value):
     if type(value) is not dict: return None
-    info: EventInfo = value['event']
-    event = None
-    if info == 'signin':
+    info: EventInfo = value.get('event', None)
+    if info == SigninEvent.event:
         event = SigninEvent()
         event.__dict__ = value
-    elif info == 'cancelSignin':
+    elif info == CancelSigninEvent.event:
         event = CancelSignoutEvent()
-    elif info == 'signout':
+    elif info == SignoutEvent.event:
         event = SignoutEvent()
-    elif info == 'cancelSignout':
+    elif info == CancelSignoutEvent.event:
         event = CancelSignoutEvent()
+    else:
+        event = None
 
     return event
