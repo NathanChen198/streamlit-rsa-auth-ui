@@ -1,0 +1,38 @@
+body{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 5px;
+}
+
+.form-header,
+.form-title,
+.form-cancel,
+.signin-body,
+.signin-remember,
+.signin-forgot,
+.signin-submit,
+.signout-submit {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.form-title {
+    display: inline-block;
+}
+
+.form-cancel {
+    font-size: large;
+    float: right;
+}
+
+.signin-remember, .signin-forgot {
+    margin-bottom: 10px;
+}
+
+.signin-forgot {
+    float: right;
+}
+
+/* .signin-submit, .signout-submit {
+    width: 100%;
+} */

@@ -4,6 +4,17 @@ date  : 12-Mar-2024
 */
 
 
+export enum FormType{
+  default = 'default',
+  inline = 'inline',
+}
+
+export enum HorizontalAlignment{
+  left = 'left',
+  right = 'right',
+  center = 'center'
+}
+
 export enum TextAlign{
   left = 'left',
   right = 'right',
@@ -11,11 +22,11 @@ export enum TextAlign{
   justify = 'justify',
   matchParent = 'match-parent'
 }
-export const getTextAlign = (align: any, defaultAlign: TextAlign = TextAlign.left) : TextAlign =>
-  (typeof align === 'string') ? TextAlign[align as keyof typeof TextAlign] : defaultAlign
-
+export const getTextAlign = (align: any, defaultAlign: HorizontalAlignment = HorizontalAlignment.left) : HorizontalAlignment =>
+  (typeof align === 'string') ? HorizontalAlignment[align as keyof typeof HorizontalAlignment] : defaultAlign
 
 export enum TitleSize{
+  smaller = 5,
   small = 4,
   medium = 3,
   large = 2,

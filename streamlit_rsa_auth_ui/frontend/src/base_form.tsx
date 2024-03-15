@@ -1,15 +1,20 @@
 /*
 author: Nathan Chen
-date  : 12-Mar-2024
+date  : 16-Mar-2024
 */
 
 
-import { ConfigProvider } from "antd";
-import React from "react";
-import { ComponentProps, ReactNode } from "react";
+import { ConfigProvider, FormProps, Typography } from "antd";
+import React, { ComponentProps, ReactNode } from "react";
 import { Streamlit, StreamlitComponentBase } from "streamlit-component-lib";
 import forge from 'node-forge'
+import { ButtonConfig, TitleConfig, getTitleStyle } from "./configs";
+import { CloseOutlined } from "@ant-design/icons";
+import { autobind } from "core-decorators"
 
+const { Title } = Typography
+
+@autobind
 export default abstract class BaseForm extends StreamlitComponentBase{
   private publicKey: forge.pki.rsa.PublicKey | undefined
 
@@ -20,6 +25,24 @@ export default abstract class BaseForm extends StreamlitComponentBase{
   }
 
   abstract getForm(): ReactNode;
+  abstract onCancel: FormProps['onClick'];
+
+  protected getHeader(title: TitleConfig | undefined, cancel: ButtonConfig | undefined): ReactNode | undefined {
+    return (title || cancel) &&
+    <div className="form-header" style={getTitleStyle(title)}>
+      {
+        title &&
+        <Title className="form-title"
+          level={title.size}
+          {...title.props}
+        >{title.text}</Title>
+      }
+      {
+        cancel &&
+        <CloseOutlined className="form-cancel" onClick={this.onCancel}/>
+      }
+    </div>
+  }
 
   protected setComponentValue(value: any){
     if (!this.publicKey){
@@ -33,7 +56,7 @@ export default abstract class BaseForm extends StreamlitComponentBase{
     }
   }
 
-  render(): React.ReactNode {
+  render(): ReactNode {
     return <div>
       <ConfigProvider
         theme={{

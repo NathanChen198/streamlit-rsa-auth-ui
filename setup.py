@@ -1,5 +1,5 @@
 # Author   : Nathan Chen
-# Date     : 08-Mar-2024
+# Date     : 15-Mar-2024
 
 
 from pathlib import Path
@@ -10,7 +10,7 @@ long_description = (this_directory / "README.md").read_text(encoding='UTF-8')
 
 setup(
     name='streamlit-rsa-auth-ui',
-    version='0.0.3',
+    version='0.0.4',
     author='Nathan Chen',
     author_email='nathan.chen.198@gmail.com',
     description='Streamlit RSA Authenticator UI',
@@ -29,7 +29,7 @@ setup(
         # By definition, a Custom Component depends on Streamlit.
         # If your component has other Python dependencies, list
         # them here.
-        "streamlit >= 0.63",
+        "streamlit >= 1.32",
         "rsa >= 4.5"
     ],
     extras_require={

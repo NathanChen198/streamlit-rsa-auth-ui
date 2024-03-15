@@ -1,40 +1,36 @@
 /*
 author: Nathan Chen
-date  : 12-Mar-2024
+date  : 16-Mar-2024
 */
 
 
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, ReactNode } from "react";
 import {
-  Form, Typography, Space, Button,
+  Form, Button,
   type FormProps,
 } from "antd";
 import BaseForm from "./base_form";
 import {
-  FormConfig, TitleConfig, ButtonConfig,
-  getTitleConfig, getButtonConfig, getConfig, getFormConfig,
+  FormConfig, ButtonConfig,
+  getTitleConfig, getButtonConfig, getConfig, getFormConfig, getFormStyle, getSubmitWidth, getButtonStyle,
 } from "./configs";
-
-const { Title } = Typography
+import { autobind } from "core-decorators";
 
 interface Configs extends FormConfig {
-  signout: ButtonConfig
-  cancel: ButtonConfig | undefined
-  title: TitleConfig | undefined
+  submit: ButtonConfig
 }
 const getConfigs = (configs: any): Configs => {
   configs = getConfig(configs)
-  const {signout, cancel, title, ...form} = {...configs} as Configs
+  const {submit, ...form} = {...configs} as Configs
 
-  const formConfigs = getFormConfig(form)
+  const formConfigs = getFormConfig(form, "Welcome")
   return {
-    signout: getButtonConfig(signout, '🔐 Sign Out'),
-    cancel: cancel ? getButtonConfig(cancel, 'Cancel') : undefined,
-    title: title ? getTitleConfig(title, "Welcome") : undefined,
+    submit: getButtonConfig(submit, '🔐 Sign Out', getSubmitWidth(formConfigs)),
     ...formConfigs
   }
 }
 
+@autobind
 export default class SignoutForm extends BaseForm{
   private configs: Configs
 
@@ -48,37 +44,25 @@ export default class SignoutForm extends BaseForm{
     this.setComponentValue(event)
   }
 
-  private onCancel: FormProps['onClick'] = () => {
+  onCancel = () => {
     const event = {'event': 'cancelSignout'}
     this.setComponentValue(event)
   }
-
-  getForm(): React.ReactNode {
-    const {signout, cancel, title, ...form} = this.configs
+  getForm(): ReactNode {
+    const {submit, cancel, title, ...form} = this.configs
     return(
-      <Form
-        name='signout'
-        style = {{ maxWidth: form.maxWidth }}
+      <Form className="signout-form" name='signout'
+        style={getFormStyle(form)}
         onFinish={this.onFinish}
         {...form.props}
       >
-        {
-          title &&
-          <Form.Item style={{textAlign: title.align}}><Title level={title.size} {...title.props}>{title.text}</Title></Form.Item>
-        }
-
-        <Space align="start">
-          <Form.Item>
-            <Button type='primary' htmlType='submit' {...signout.props}>{signout.label}</Button>
-          </Form.Item>
-
-          {
-            cancel &&
-            <Form.Item>
-              <Button onClick={this.onCancel} {...cancel.props}>{cancel.label}</Button>
-            </Form.Item>
-          }
-        </Space>
+        { this.getHeader(title, cancel) }
+        <Button className="signout-submit"
+          type='primary'
+          htmlType='submit'
+          style={getButtonStyle(submit)}
+          {...submit.props}
+        >{submit.label}</Button>
       </Form>
     )
   }

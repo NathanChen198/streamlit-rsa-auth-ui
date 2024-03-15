@@ -113,6 +113,11 @@ streamlit run example.py
 - Optional 'cancel' button to signoutform
 - Minor bug fixed
 - Remove bootstrap.min.css warning
+### Version 0.0.4
+- Remove location setting(seem redundunt as if you want to add to any container/sidebar you can call with syntax)
+- Add in classname to frontend so that easier to add in custom styling if needed
+- Remove off the unnecessary excess height of streamlit
+
 
 
 [pypi_badge]: https://img.shields.io/pypi/v/streamlit-rsa-auth-ui.svg

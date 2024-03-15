@@ -9,6 +9,7 @@ import { createRoot } from "react-dom/client";
 import SigninForm from "./signin_form";
 import { ComponentProps, withStreamlitConnection } from "streamlit-component-lib";
 import SignoutForm from "./signout_form";
+import ChangePasswordForm from "./change_password_form";
 
 
 const getComponent = (props: ComponentProps) => {
@@ -16,6 +17,7 @@ const getComponent = (props: ComponentProps) => {
     switch (id){
         case 'signin': return (<SigninForm {...props} />)
         case 'signout': return (<SignoutForm {...props} />)
+        case 'changePassword': return(<ChangePasswordForm {...props} />)
         default: return (<div />)
     }
 }
