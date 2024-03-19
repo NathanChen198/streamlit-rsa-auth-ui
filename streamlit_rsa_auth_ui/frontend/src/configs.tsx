@@ -1,21 +1,19 @@
 /*
-author: Nathan Chen
-date  : 15-Mar-2024
+  author: Nathan Chen
+  date  : 15-Mar-2024
 */
 
 
+import { IconBaseProps } from "@ant-design/icons/lib/components/Icon"
 import
 {
   FormType,
-  HorizontalAlignment, TitleSize,
+  HorizontalAlignment, InputType, TitleSize,
   getTextAlign, getTitleSize,
 } from "./types"
 import {
-  InputProps,
-  FormProps, 
-  CheckboxProps,
-  ButtonProps,
-  FormItemProps
+  FormProps, FormItemProps,
+  InputProps, InputNumberProps, CheckboxProps, ButtonProps,
 } from "antd"
 import { 
   TitleProps
@@ -27,167 +25,176 @@ const getString = (text: any, defaultText: string): string => (typeof text === '
 
 export interface TitleConfig{
   text: string
-  size: TitleSize
-  align: HorizontalAlignment
+  headerStyle?: React.CSSProperties
   props: TitleProps
 }
-export const getTitleConfig = (config: any, defaultText: string, defaultSize?: TitleSize, defaultAlign?: HorizontalAlignment) : TitleConfig => {
+export const getTitleConfig = (config: any, _default: any) : TitleConfig => {
   config = getConfig(config)
-  const {text, size, align, ...rest} = config
+  let {text, size, align, title, cancel, submit, ...rest} = config
 
-  return {
-    text: getString(text, defaultText),
-    size: getTitleSize(size, defaultSize || TitleSize.medium),
-    align: getTextAlign(align, defaultAlign || HorizontalAlignment.left),
-    props: rest
-  } as TitleConfig
-}
-export function getTitleStyle(config: TitleConfig | undefined): TitleProps['style'] {
-  if(!config) return
-  const {align, props} = config
-  return {
-    textAlign: align,
-    ...props.style
-  }
+  text = getString(text, _default.text)
+  size = getTitleSize(size, _default.size || TitleSize.medium)
+  align = getTextAlign(align, _default.align || HorizontalAlignment.left)
+  const headerStyle: React.CSSProperties = {textAlign: align}
+  const props: TitleProps = {level: size, ...rest}
+
+  return {text, headerStyle, props}
 }
 
-export interface FormItemConfig{
-  label?: string
-  width?: any
-}
-
-export interface InputRule {
+export interface FormItemRule {
   message?: string
   warningOnly?: boolean
 }
-export interface InputRequired extends InputRule {
+export interface FormItemRequired extends FormItemRule {
   required: boolean
 }
-export interface InputPattern extends InputRule {
+export interface FormItemPattern extends FormItemRule {
   pattern: string
 }
-export interface InputConfig extends FormItemConfig {
-  required: InputRequired | undefined
-  patterns: InputPattern[] | undefined
-  props: InputProps
-}
-export const getInputConfig = (config: any, defaultPlaceholder: string, defaultWidth?: any) : InputConfig => {
-  config = getConfig(config)
-  const {label, width, required, patterns, ...rest} = config
 
-  rest.placeholder = rest.placeholder || (!label && !rest.placeholder) ? defaultPlaceholder : undefined
-
-  return{
-    label: label,
-    width: width || defaultWidth,
-    required: required || { required: true },
-    patterns: patterns,
-    props: rest
-  }
+interface FormItemConfig{
+  formItemProps: FormItemProps
 }
-export function getInputFieldRules(config: InputConfig) : FormItemProps['rules'] {
+export const getFormItemRules = (_required?: any, patterns?: any) => {
   const rules: FormItemProps['rules'] = []
-  if (config.required){
-    const {required, ...rest} = config.required
-    rules.push({ required: required, ...rest})
+  if (_required){
+    const {required, ...rest} = _required
+    rules.push({required, ...rest})
   }
-  if (config.patterns){
-    config.patterns.forEach(value => {
+  if (Array.isArray(patterns)){
+    patterns.forEach(value => {
       const {pattern, ...rest} = value
       rules.push({pattern:  RegExp(pattern), ...rest})
     })
   }
   return rules
 }
-export function getInputStyle (config: InputConfig) : InputProps['style'] {
-  return {
-    width: config.width,
-    ...config.props.style
-  }
+export const getFormItemProps = (config: any, _default?: any) : [props: FormItemProps, rest: any] => {
+  config = getConfig(config)
+  _default = getConfig(_default)
+  let {label, width, required, patterns, ...rest} = config
+
+  label = label || _default?.label
+  width = width || _default?.width
+  
+  required = required || _default?.required
+  const rules = getFormItemRules(required, patterns)
+
+  return [{label, style: {width}, rules}, rest]
+}
+
+export interface InputConfig extends FormItemConfig {
+  props: InputProps
+}
+export const getInputConfig = (config: any, _default?: any) : InputConfig => {
+  const [formItemProps, props] = getFormItemProps(config, _default);
+  props.placeholder = props.placeholder || (!formItemProps.label && !props.placeholder) ? _default?.placeholder : undefined
+  return{formItemProps, props}
+}
+
+export interface InputNumberConfig extends FormItemConfig {
+  props: InputNumberProps
+}
+export const getInputNumberConfig = (config: any, _default?: any): InputNumberConfig => {
+  const [formItemProps, props] = getFormItemProps(config, _default)
+  props.placeholder = props.placeholder || (!config.label && !props.placeholder) ? _default.placeholder : undefined
+
+  return{formItemProps, props}
 }
 
 export interface CheckboxConfig extends FormItemConfig {
+  text: string
   props: CheckboxProps
 }
-export const getCheckboxConfig = (config: any, defaultLabel: string) : CheckboxConfig => {
+export const getCheckboxConfig = (config: any, _default?: any) : CheckboxConfig => {
   config = getConfig(config)
-  const {label, width, ...rest} = config
-
-  return {
-    label: getString(label, defaultLabel),
-    width: width,
-    props: rest
-  }
-}
-export const getCheckboxStyle = (config: CheckboxConfig): CheckboxProps['style'] => {
-  return {
-    width: config.width,
-    ...config.props.style
-  }
+  let {label, ..._config} = config
+  label ||= _default?.label
+  const [formItemProps, props] = getFormItemProps(_config, _default)
+  return{text: label, formItemProps, props}
 }
 
-export interface ButtonConfig extends FormItemConfig {
+export interface ButtonConfig {
+  text: string
   props: ButtonProps
 }
-export const getButtonConfig = (config: any, defaultLabel: string, defaultWidth?: any) : ButtonConfig => {
+export const getButtonConfig = (config: any, _default?: any) : ButtonConfig => {
   config = getConfig(config)
-  const {label, width, ...rest} = config
-
+  let {label, width, style, ...props} = config
+  style = {
+    width: width || _default?.width,
+    ...style
+  }
+  props.style = style
   return {
-    label: getString(label, defaultLabel),
-    width: width || (defaultWidth || 'fit-content'),
-    props: rest
+    text: label || _default?.label || 'Submit',
+    props
   }
 }
-export const getButtonStyle = (config: ButtonConfig): ButtonProps['style'] => {
-  return {
-    width: config.width,
-    ...config.props.style
-  }
+
+export interface IconConfig {
+  props: IconBaseProps
+}
+export const getIconConfig = (config: any, _default?: any): IconConfig => {
+  config = getConfig(config)
+  return {props: config}
 }
 
 export interface FormConfig {
-  labelSpan?: number,
-  wrapperSpan?: number,
-  maxWidth: any
-  align: HorizontalAlignment
   type: FormType
+  props: FormProps
   title?: TitleConfig
   cancel?: ButtonConfig
-  props: FormProps
+  submit: ButtonConfig
 }
-export const getFormConfig = (config: any, defaultTitle: string) : FormConfig => {
+export const getFormConfig = (config: any, _default: any): FormConfig => {
   config = getConfig(config)
-  const {labelSpan, wrapperSpan, maxWidth, align, type, title, cancel, ...rest} = config
-  const _type: FormType = type || FormType.default
+  _default = getConfig(_default)
 
-  if (!rest.labelAlign) rest.labelAlign = 'right' as FormProps['labelAlign']
-  if (!rest.autoComplete) rest.autoComplete = 'off' as FormProps['autoComplete']
-  return {
-    labelSpan: labelSpan,
-    wrapperSpan: wrapperSpan,
-    maxWidth: maxWidth,
-    align: align,
-    type: _type,
-    title: title && getTitleConfig(title, defaultTitle),
-    cancel: cancel && getButtonConfig(cancel, 'Cancel'),
-    props: rest
-  }
-}
-export const getFormStyle = (config: FormConfig): FormProps['style'] => {
-  const {type, maxWidth, align} = config
-  const _maxWidth = (!maxWidth && type === FormType.default) ? 300 : maxWidth
+  let {type, labelSpan, wrapperSpan, maxWidth, align, title, cancel, submit, ...rest} = config
+  type = type || _default.type || FormType.default
+  maxWidth = maxWidth || _default.maxWidth
+  maxWidth = (!maxWidth && type === FormType.default) ? 300 : maxWidth
+  align = align || _default.align
   const marginLeft = (align === HorizontalAlignment.center || align === HorizontalAlignment.right) ? 'auto' : undefined
-  const marginRight = (align === HorizontalAlignment.center || align === HorizontalAlignment.left) ? 'auto' : undefined
+  const marginRIght = (align === HorizontalAlignment.center || align === HorizontalAlignment.left) ? 'auto' : undefined
 
-  return {
-    maxWidth: _maxWidth,
+  const props = rest as FormProps
+  props.labelCol = {span: labelSpan || _default.labelSpan}
+  props.wrapperCol = {span: wrapperSpan || _default.wrapperSpan}
+  props.style = {
+    maxWidth,
     marginLeft: marginLeft,
-    marginRight: marginRight,
-    ...config.props.style
+    marginRight: marginRIght,
+    ...props.style
+  }
+
+  if (type === FormType.default){
+    _default.submit ??= {}
+    _default.submit.width ||= '100%'
+  }
+
+  return {type, props,
+    title: title && getTitleConfig(title, _default.title),
+    cancel: cancel && getIconConfig(cancel, _default.cancel),
+    submit: getButtonConfig(submit, _default.submit)
   }
 }
-export const getSubmitWidth = (config: FormConfig) : any => {
-  if(config.type === FormType.default) return '100%'
-  else return undefined
+
+export interface CustomInputConfig {
+  type: InputType
+  name: string
+  config?: any
+  defaultConfig?: any
+}
+export const getCustomInputConfig = (type: InputType, name: string, config: any, _default?: any): CustomInputConfig | undefined => {
+  _default = getConfig(_default)
+  if (type === InputType.text){
+    config = getInputConfig(config, _default)
+    return {type, name, config}
+  }
+  else if (type === InputType.number){
+    config = getInputNumberConfig(config, _default)
+    return {type, name, config}
+  }
 }

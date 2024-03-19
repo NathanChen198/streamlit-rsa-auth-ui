@@ -8,13 +8,11 @@ import { ConfigProvider, FormProps, Typography } from "antd";
 import React, { ComponentProps, ReactNode } from "react";
 import { Streamlit, StreamlitComponentBase } from "streamlit-component-lib";
 import forge from 'node-forge'
-import { ButtonConfig, TitleConfig, getTitleStyle } from "./configs";
+import { ButtonConfig, TitleConfig } from "./configs";
 import { CloseOutlined } from "@ant-design/icons";
-import { autobind } from "core-decorators"
 
 const { Title } = Typography
 
-@autobind
 export default abstract class BaseForm extends StreamlitComponentBase{
   private publicKey: forge.pki.rsa.PublicKey | undefined
 
@@ -29,12 +27,10 @@ export default abstract class BaseForm extends StreamlitComponentBase{
 
   protected getHeader(title: TitleConfig | undefined, cancel: ButtonConfig | undefined): ReactNode | undefined {
     return (title || cancel) &&
-    <div className="form-header" style={getTitleStyle(title)}>
+    <div className="form-header" style={title?.headerStyle}>
       {
         title &&
-        <Title className="form-title"
-          level={title.size}
-          {...title.props}
+        <Title className="form-title" {...title.props}
         >{title.text}</Title>
       }
       {

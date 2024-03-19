@@ -49,9 +49,8 @@ export enum InputType{
   date = "date",
   time = "time",
   datetime = "datetime",
-  date_range = "date_range",
-  choose_one = "choose_one",
-  choose_many = "choose_many",
+  choose_one = "select_one",
+  choose_many = "select_many",
 }
 export const getInputType = (type: any) : InputType | undefined => {
   if(typeof type === 'string')

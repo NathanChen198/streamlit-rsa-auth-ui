@@ -18,7 +18,7 @@ import {
 } from "./types"
 import {
   FormConfig, TitleConfig, InputConfig, CheckboxConfig, ButtonConfig,
-  getConfig, getFormConfig, getTitleConfig, getInputConfig, getCheckboxConfig, getButtonConfig, getInputFieldRules, getFormStyle, getTitleStyle, getButtonStyle, getSubmitWidth, getInputStyle,
+  getConfig, getFormConfig, getTitleConfig, getInputConfig, getCheckboxConfig, getButtonConfig,
 } from "./configs";
 
 
@@ -39,12 +39,26 @@ const getConfigs = (configs: any): Configs => {
   configs = getConfig(configs)
   const {current, newPass, confirm, submit, ...form} = {...configs} as Configs
 
-  const formConfigs = getFormConfig(form, 'Change Password')
+  const formConfigs = getFormConfig(form, {
+    title: {text: 'Change Password'},
+    submit: {label: '🔏 Change'}
+  })
   return {
-    current: getInputConfig(current, 'Current password', '100%'),
-    newPass: getInputConfig(newPass, 'New password', '100%'),
-    confirm: getInputConfig(confirm, 'Confirm password', '100%'),
-    submit: getButtonConfig(submit, '🔏 Change', getSubmitWidth(formConfigs)),
+    current: getInputConfig(current, {
+      placeholder: 'Current password',
+      width: '100%',
+      required: { required: true }
+    }),
+    newPass: getInputConfig(newPass, {
+      placeholder: 'New password',
+      width: '100%',
+      required: { required: true }
+    }),
+    confirm: getInputConfig(confirm, {
+      placeholder: 'Confirm password',
+      width: '100%',
+      required: { required: true }
+    }),
     ...formConfigs
   }
 }
@@ -72,78 +86,48 @@ export default class ChangePasswordForm extends BaseForm{
   confirm: InputConfig | undefined,
   submit: ButtonConfig) : ReactNode {
     return <div className="change-password-body">
-      <Form.Item<FieldType> className="change-password-current" name="current"
-        label={current.label}
-        rules={getInputFieldRules(current)}
-        style={getInputStyle(current)}
-      >
+      <Form.Item<FieldType> className="change-password-current" name="current" {...current.formItemProps}>
         <Input.Password className="change-password-current" prefix={<LockOutlined />} {...current.props} />
       </Form.Item>
 
-      <Form.Item<FieldType> className="change-password-new" name="new"
-        label={newPass.label}
-        rules={getInputFieldRules(newPass)}
-        style={getInputStyle(newPass)}
-      >
+      <Form.Item<FieldType> className="change-password-new" name="new" {...newPass.formItemProps}>
         <Input.Password className="change-password-new" prefix={<UnlockOutlined />} {...newPass.props} />
       </Form.Item>
 
       {
         confirm &&
-        <Form.Item<FieldType> className="change-password-confirm" name="confirm"
-          label={confirm.label}
-          rules={getInputFieldRules(confirm)}
-          style={getInputStyle(confirm)}
-        >
+        <Form.Item<FieldType> className="change-password-confirm" name="confirm" {...confirm.formItemProps}>
           <Input.Password className="change-password-confirm" prefix={<UnlockOutlined />} {...confirm.props} />
         </Form.Item>
       }
 
-      <Button className="change-password-submit"
-        type="primary"
-        htmlType="submit"
-        style={getButtonStyle(submit)}
-        {...submit.props}
-      >{submit.label}</Button>
+      <Button className="change-password-submit" type="primary" htmlType="submit" {...submit.props}>
+        {submit.text}
+      </Button>
     </div>
   }
 
   private getInlineBody(current: InputConfig, newPass: InputConfig, confirm: InputConfig, submit: ButtonConfig) : ReactNode {
     return <div className="change-password-body">
       <Flex className="change-password-body" gap='small' align='start'>
-        <Form.Item<FieldType> className="change-password-current" name="current"
-          label={current.label}
-          rules={getInputFieldRules(current)}
-          style={getInputStyle(current)}
-        >
+        <Form.Item<FieldType> className="change-password-current" name="current" {...current.formItemProps}>
           <Input.Password className="change-password-current" prefix={<LockOutlined />} {...current.props} />
         </Form.Item>
 
-        <Form.Item<FieldType> className="change-password-new" name="new"
-          label={newPass.label}
-          rules={getInputFieldRules(newPass)}
-          style={getInputStyle(newPass)}
-        >
+        <Form.Item<FieldType> className="change-password-new" name="new" {...newPass.formItemProps}>
           <Input.Password className="change-password-password" prefix={<UnlockOutlined />} {...newPass.props} />
         </Form.Item>
 
         {
           confirm &&
-          <Form.Item<FieldType> className="change-password-confirm" name="confirm"
-            label={confirm.label}
-            rules={getInputFieldRules(confirm)}
-            style={getInputStyle(confirm)}
-          >
+          <Form.Item<FieldType> className="change-password-confirm" name="confirm" {...confirm.formItemProps}>
             <Input.Password className="change-password-password" prefix={<UnlockOutlined />} {...confirm.props} />
           </Form.Item>
         }
 
-        <Button className="change-password-submit"
-          type="primary"
-          htmlType="submit"
-          style={getButtonStyle(submit)}
-          {...submit.props}
-        >{submit.label}</Button>
+        <Button className="change-password-submit" type="primary" htmlType="submit" {...submit.props}>
+          {submit.text}
+        </Button>
       </Flex>
     </div>
   }
@@ -152,17 +136,9 @@ export default class ChangePasswordForm extends BaseForm{
     const {title, cancel, current, newPass, confirm, submit, ...form} = this.configs
 
     return(
-      <Form className="change-password-form" name="change-password"
-        labelCol={{ span: form.labelSpan }}
-        wrapperCol={{ span: form.wrapperSpan }}
-        style={getFormStyle(form)}
-        initialValues={ this.default }
-        onFinish={this.onFinish}
-        {...form.props}
-      >
+      <Form className="change-password-form" name="change-password" initialValues={ this.default } onFinish={this.onFinish} {...form.props}>
         { this.getHeader(title, cancel) }
         { this.getDefaultBody(current, newPass, confirm, submit) }
-        
       </Form>
     )
   }
@@ -171,17 +147,9 @@ export default class ChangePasswordForm extends BaseForm{
     const {title, cancel, current, newPass, confirm, submit, ...form} = this.configs
 
     return(
-      <Form className="change-password-form" name="change-password"
-        labelCol={{ span: form.labelSpan }}
-        wrapperCol={{ span: form.wrapperSpan }}
-        style={getFormStyle(form)}
-        initialValues={this.default}
-        onFinish={this.onFinish}
-        {...form.props}
-      >
+      <Form className="change-password-form" name="change-password" initialValues={this.default} onFinish={this.onFinish} {...form.props}>
         { this.getHeader(title, cancel) }
         { this.getInlineBody(current, newPass, confirm, submit) }
-        
       </Form>
     )
   }

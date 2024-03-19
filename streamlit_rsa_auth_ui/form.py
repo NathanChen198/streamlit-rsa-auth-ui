@@ -58,3 +58,11 @@ def changePasswordForm(publicKey: None, default: Optional[Object] = None, config
 def changePasswordForm(publicKey: str, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[str]: pass
 def changePasswordForm(publicKey: Optional[str] = None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Union[Object, str, None]:
     return createComponent('changePassword', publicKey, default, configs)
+
+
+@overload
+def registerForm(publicKey: None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[Object]: pass
+@overload
+def registerForm(publicKey: str, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[str]: pass
+def registerForm(publicKey: Optional[str] = None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Union[Object, str, None]:
+    return createComponent('register', publicKey, default, configs)

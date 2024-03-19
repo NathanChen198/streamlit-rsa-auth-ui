@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, signinForm, signoutForm, changePasswordForm
+from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, signinForm, signoutForm, changePasswordForm, registerForm
 ss = st.session_state
 
 st.set_page_config(layout='wide')
@@ -7,26 +7,57 @@ st.set_page_config(layout='wide')
 encryptor = Encryptor.load('rsa', 'key')
 with st.sidebar:
     signoutForm(encryptor.publicKeyPem, configs={
-        'align': 'right',
+        # 'align': 'left',
         'title': {
             'text': 'Welcome Chen, Nathan',
-            'size': 'smaller'
+            'size': 'smaller',
+            # 'align': 'center'
         },
         # 'cancel': {}
     })
 
 signinForm(encryptor.publicKeyPem, configs={
     'type': 'inline',
-    'title': {},
+    'title': {
+        # 'align': 'center'
+    },
     'cancel': {},
     'forgot': {},
-    'title': {}
+    'remember': {},
+    # 'maxWidth': 500,
+    'labelSpan': 4,
+    'username': {
+        # 'label': 'Username',
+        'placeholder': 'Username',
+        'patterns': [
+            {'pattern': '^.*@example.com$', 'message': 'Must be example email'}
+        ]
+    },
+    'password': {
+        # 'label': 'Password',
+        'placeholder': 'Password'
+    },
+    # 'align': 'center',
+    'style': {
+        # 'maxWidth': 500,
+        'marginLeft': 'auto',
+        'marginRight': 'auto'
+    }
 })
 
 changePasswordForm(encryptor.publicKeyPem, configs={
     'type': 'inline',
     'title': {},
     'cancel': {},
+})
+
+registerForm(encryptor.publicKeyPem, configs={
+    'number': {
+        'type': 'number',
+        'defaultConfig': {
+            'placeholder': 'Number Please'
+        }
+    }
 })
 
 # def checkAuth(username: str, password: str):

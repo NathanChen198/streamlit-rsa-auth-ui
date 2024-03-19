@@ -18,7 +18,7 @@ import {
 } from "./types"
 import {
   FormConfig, InputConfig, CheckboxConfig, ButtonConfig,
-  getConfig, getFormConfig, getTitleConfig, getInputConfig, getCheckboxConfig, getButtonConfig, getInputFieldRules, getFormStyle, getButtonStyle, getSubmitWidth, getInputStyle, getCheckboxStyle,
+  getConfig, getFormConfig, getInputConfig, getCheckboxConfig, getButtonConfig
 } from "./configs";
 
 
@@ -33,19 +33,29 @@ interface Configs extends FormConfig{
   password: InputConfig
   remember: CheckboxConfig | undefined
   forgot: ButtonConfig | undefined
-  submit: ButtonConfig
 }
 const getConfigs = (configs: any): Configs => {
   configs = getConfig(configs)
-  const {username, password, submit, remember, forgot, ...form} = {...configs} as Configs
+  const {username, password, remember, forgot, ...form} = {...configs} as Configs
 
-  const formConfigs = getFormConfig(form, 'Login')
+  const formConfigs = getFormConfig(form, {
+    type: FormType.default,
+    title: {text: 'Login'},
+    submit: {label: '🔑 Sign In'}
+  })
   return{
-    username: getInputConfig(username, 'Username', '100%'),
-    password: getInputConfig(password, 'Password', '100%'),
-    remember: remember && getCheckboxConfig(remember, 'Remember me'),
-    forgot: forgot && getButtonConfig(forgot, 'Forgot password'),
-    submit: getButtonConfig(submit, '🔑 Sign In', getSubmitWidth(formConfigs)),
+    username: getInputConfig(username, {
+      placeholder: 'Username',
+      width: '100%',
+      required: { required: true }
+    }),
+    password: getInputConfig(password, {
+      placeholder: 'Password',
+      width: '100%',
+      required: { required: true }
+    }),
+    remember: remember && getCheckboxConfig(remember, {label: 'Remember me'}),
+    forgot: forgot && getButtonConfig(forgot, {label: 'Forgot password'}),
     ...formConfigs
   }
 }
@@ -70,7 +80,7 @@ export default class SigninForm extends BaseForm{
   }
 
   onCancel = () => {
-    const event = {'event': 'cancelSignin'}
+    const event = {event: 'cancelSignin'}
     this.setComponentValue(event)
   }
 
@@ -83,19 +93,13 @@ export default class SigninForm extends BaseForm{
     return <div className="signin-addon">
       {
         remember &&
-        <Form.Item<FieldType> className="signin-remember"
-          name="remember"
-          valuePropName="checked"
-          style={getCheckboxStyle(remember)}
-          noStyle
-        >
-          <Checkbox className="signin-remember" {...remember.props}>{remember.label}
-          </Checkbox>
+        <Form.Item<FieldType> className="signin-remember" name="remember" valuePropName="checked" noStyle {...remember.formItemProps}>
+          <Checkbox className="signin-remember" {...remember.props}>{remember.text}</Checkbox>
         </Form.Item>
       }
       {
         forgot &&
-        <a className="signin-forgot" onClick={this.onForgot}>Forgot password</a>
+        <a className="signin-forgot" onClick={this.onForgot} {...forgot.props}>{forgot.text}</a>
       }
     </div>
   }
@@ -106,58 +110,34 @@ export default class SigninForm extends BaseForm{
   forgot: ButtonConfig | undefined,
   submit: ButtonConfig) : ReactNode {
     return <div className="signin-body">
-      <Form.Item<FieldType> className="signin-username" name="username"
-        label={username.label}
-        rules={getInputFieldRules(username)}
-        style={getInputStyle(username)}
-      >
+      <Form.Item<FieldType> className="signin-username" name="username" {...username.formItemProps}>
         <Input className="signin-username" prefix={<UserOutlined />} {...username.props} />
       </Form.Item>
 
-      <Form.Item<FieldType> className="signin-password" name="password"
-        label={password.label}
-        rules={getInputFieldRules(password)}
-        style={getInputStyle(password)}
-      >
+      <Form.Item<FieldType> className="signin-password" name="password" {...password.formItemProps}>
         <Input.Password className="signin-password" prefix={<LockOutlined />} {...password.props} />
       </Form.Item>
 
       { this.getAddon(remember, forgot) }
 
-      <Button className="signin-submit"
-        type="primary"
-        htmlType="submit"
-        style={getButtonStyle(submit)}
-        {...submit.props}
-      >{submit.label}</Button>
+      <Button className="signin-submit" type="primary" htmlType="submit" {...submit.props}
+      >{submit.text}</Button>
     </div>
   }
 
   private getInlineBody(username: InputConfig, password: InputConfig, submit: ButtonConfig) : ReactNode {
     return <div className="signin-body">
       <Flex className="signin-body" gap='small' align='start'>
-        <Form.Item<FieldType> className="signin-username" name="username"
-          label={username.label}
-          rules={getInputFieldRules(username)}
-          style={getInputStyle(username)}
-        >
+        <Form.Item<FieldType> className="signin-username" name="username" {...username.formItemProps}>
           <Input className="signin-username" prefix={<UserOutlined />} {...username.props} />
         </Form.Item>
 
-        <Form.Item<FieldType> className="signin-password" name="password"
-          label={password.label}
-          rules={getInputFieldRules(password)}
-          style={getInputStyle(password)}
-        >
+        <Form.Item<FieldType> className="signin-password" name="password" {...password.formItemProps}>
           <Input.Password className="signin-password" prefix={<LockOutlined />} {...password.props} />
         </Form.Item>
 
-        <Button className="signin-submit"
-          type="primary"
-          htmlType="submit"
-          style={getButtonStyle(submit)}
-          {...submit.props}
-        >{submit.label}</Button>
+        <Button className="signin-submit" type="primary" htmlType="submit" {...submit.props}
+        >{submit.text}</Button>
       </Flex>
     </div>
   }
@@ -166,17 +146,9 @@ export default class SigninForm extends BaseForm{
     const {title, cancel, username, password, remember, forgot, submit, ...form} = this.configs
 
     return(
-      <Form className="signin-form" name="signin"
-        labelCol={{ span: form.labelSpan }}
-        wrapperCol={{ span: form.wrapperSpan }}
-        style={getFormStyle(form)}
-        initialValues={ this.default }
-        onFinish={this.onFinish}
-        {...form.props}
-      >
+      <Form className="signin-form" name="signin" initialValues={ this.default } onFinish={this.onFinish} {...form.props}>
         { this.getHeader(title, cancel) }
         { this.getDefaultBody(username, password, remember, forgot, submit) }
-        
       </Form>
     )
   }
@@ -185,18 +157,10 @@ export default class SigninForm extends BaseForm{
     const {title, cancel, username, password, remember, forgot, submit, ...form} = this.configs
 
     return(
-      <Form className="signin-form" name="signin"
-        labelCol={{ span: form.labelSpan }}
-        wrapperCol={{ span: form.wrapperSpan }}
-        style={getFormStyle(form)}
-        initialValues={this.default}
-        onFinish={this.onFinish}
-        {...form.props}
-      >
-        { this.getHeader(title, cancel) }
-        { this.getInlineBody(username, password, submit) }
-        { this.getAddon(remember, forgot)}
-        
+      <Form className="signin-form" name="signin" initialValues={this.default} onFinish={this.onFinish} {...form.props}>
+        {this.getHeader(title, cancel)}
+        {this.getInlineBody(username, password, submit)}
+        {this.getAddon(remember, forgot)}
       </Form>
     )
   }

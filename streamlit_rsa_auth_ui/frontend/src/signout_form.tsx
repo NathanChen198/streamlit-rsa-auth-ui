@@ -12,27 +12,24 @@ import {
 import BaseForm from "./base_form";
 import {
   FormConfig, ButtonConfig,
-  getTitleConfig, getButtonConfig, getConfig, getFormConfig, getFormStyle, getSubmitWidth, getButtonStyle,
+  getConfig, getFormConfig,
 } from "./configs";
-import { autobind } from "core-decorators";
+import { FormType } from "./types";
 
-interface Configs extends FormConfig {
-  submit: ButtonConfig
-}
-const getConfigs = (configs: any): Configs => {
+const getConfigs = (configs: any): FormConfig => {
   configs = getConfig(configs)
-  const {submit, ...form} = {...configs} as Configs
+  const {...form} = {...configs} as FormConfig
 
-  const formConfigs = getFormConfig(form, "Welcome")
-  return {
-    submit: getButtonConfig(submit, '🔐 Sign Out', getSubmitWidth(formConfigs)),
-    ...formConfigs
-  }
+  const formConfigs = getFormConfig(form, {
+    type: FormType.default,
+    title: {text: "Welcome"},
+    submit: {label: '🔐 Sign Out'},
+  })
+  return formConfigs
 }
 
-@autobind
 export default class SignoutForm extends BaseForm{
-  private configs: Configs
+  private configs: FormConfig
 
   constructor(props: ComponentProps<any>){
     super(props)
@@ -51,18 +48,11 @@ export default class SignoutForm extends BaseForm{
   getForm(): ReactNode {
     const {submit, cancel, title, ...form} = this.configs
     return(
-      <Form className="signout-form" name='signout'
-        style={getFormStyle(form)}
-        onFinish={this.onFinish}
-        {...form.props}
-      >
+      <Form className="signout-form" name='signout' onFinish={this.onFinish} {...form.props}>
         { this.getHeader(title, cancel) }
-        <Button className="signout-submit"
-          type='primary'
-          htmlType='submit'
-          style={getButtonStyle(submit)}
-          {...submit.props}
-        >{submit.label}</Button>
+        <Button className="signout-submit" type='primary' htmlType='submit' {...submit.props}>
+          {submit.text}
+        </Button>
       </Form>
     )
   }

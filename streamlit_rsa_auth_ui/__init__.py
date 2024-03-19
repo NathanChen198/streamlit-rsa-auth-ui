@@ -4,4 +4,4 @@
 
 from .encryption import Encryptor
 from .events import SigninEvent, CancelSigninEvent, SignoutEvent, CancelSignoutEvent, EventInfo, getEvent
-from .form import FormLocation, ConfigType, Object, signinForm, signoutForm, changePasswordForm
+from .form import FormLocation, ConfigType, Object, signinForm, signoutForm, changePasswordForm, registerForm
