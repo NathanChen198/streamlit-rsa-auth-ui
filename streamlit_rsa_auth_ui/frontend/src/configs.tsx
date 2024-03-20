@@ -1,6 +1,6 @@
 /*
   author: Nathan Chen
-  date  : 15-Mar-2024
+  date  : 20-Mar-2024
 */
 
 
@@ -8,16 +8,17 @@ import { IconBaseProps } from "@ant-design/icons/lib/components/Icon"
 import
 {
   FormType,
-  HorizontalAlignment, InputType, TitleSize,
+  HorizontalAlignment, TitleSize,
   getTextAlign, getTitleSize,
 } from "./types"
 import {
   FormProps, FormItemProps,
-  InputProps, InputNumberProps, CheckboxProps, ButtonProps,
+  InputProps, InputNumberProps, CheckboxProps, ButtonProps
 } from "antd"
 import { 
   TitleProps
 } from "antd/es/typography/Title"
+import React from "react"
 
 export const getConfig = (config: any): any => (typeof config === 'object') ? config : {}
 const getString = (text: any, defaultText: string): string => (typeof text === 'string') ? text : defaultText
@@ -32,9 +33,9 @@ export const getTitleConfig = (config: any, _default: any) : TitleConfig => {
   config = getConfig(config)
   let {text, size, align, title, cancel, submit, ...rest} = config
 
-  text = getString(text, _default.text)
-  size = getTitleSize(size, _default.size || TitleSize.medium)
-  align = getTextAlign(align, _default.align || HorizontalAlignment.left)
+  text = getString(text, _default?.text)
+  size = getTitleSize(size, _default?.size || TitleSize.medium)
+  align = getTextAlign(align, _default?.align || HorizontalAlignment.left)
   const headerStyle: React.CSSProperties = {textAlign: align}
   const props: TitleProps = {level: size, ...rest}
 
@@ -88,7 +89,7 @@ export interface InputConfig extends FormItemConfig {
 }
 export const getInputConfig = (config: any, _default?: any) : InputConfig => {
   const [formItemProps, props] = getFormItemProps(config, _default);
-  props.placeholder = props.placeholder || (!formItemProps.label && !props.placeholder) ? _default?.placeholder : undefined
+  props.placeholder = props.placeholder || ((!formItemProps.label && !props.placeholder) ? _default?.placeholder : undefined)
   return{formItemProps, props}
 }
 
@@ -97,8 +98,9 @@ export interface InputNumberConfig extends FormItemConfig {
 }
 export const getInputNumberConfig = (config: any, _default?: any): InputNumberConfig => {
   const [formItemProps, props] = getFormItemProps(config, _default)
-  props.placeholder = props.placeholder || (!config.label && !props.placeholder) ? _default.placeholder : undefined
-
+  props.placeholder = props.placeholder || ((!config.label && !props.placeholder) ? _default.placeholder : undefined)
+  props.style ??= {}
+  props.style.width ??= '100%'
   return{formItemProps, props}
 }
 
@@ -111,6 +113,7 @@ export const getCheckboxConfig = (config: any, _default?: any) : CheckboxConfig 
   let {label, ..._config} = config
   label ||= _default?.label
   const [formItemProps, props] = getFormItemProps(_config, _default)
+  formItemProps.valuePropName = 'checked'
   return{text: label, formItemProps, props}
 }
 
@@ -147,7 +150,7 @@ export interface FormConfig {
   cancel?: ButtonConfig
   submit: ButtonConfig
 }
-export const getFormConfig = (config: any, _default: any): FormConfig => {
+export const getFormConfig = (config: any, _default?: any): FormConfig => {
   config = getConfig(config)
   _default = getConfig(_default)
 
@@ -178,23 +181,5 @@ export const getFormConfig = (config: any, _default: any): FormConfig => {
     title: title && getTitleConfig(title, _default.title),
     cancel: cancel && getIconConfig(cancel, _default.cancel),
     submit: getButtonConfig(submit, _default.submit)
-  }
-}
-
-export interface CustomInputConfig {
-  type: InputType
-  name: string
-  config?: any
-  defaultConfig?: any
-}
-export const getCustomInputConfig = (type: InputType, name: string, config: any, _default?: any): CustomInputConfig | undefined => {
-  _default = getConfig(_default)
-  if (type === InputType.text){
-    config = getInputConfig(config, _default)
-    return {type, name, config}
-  }
-  else if (type === InputType.number){
-    config = getInputNumberConfig(config, _default)
-    return {type, name, config}
   }
 }

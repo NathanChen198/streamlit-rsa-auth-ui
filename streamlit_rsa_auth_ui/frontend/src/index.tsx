@@ -1,6 +1,6 @@
 /*
 author: Nathan Chen
-date  : 12-Mar-2024
+date  : 20-Mar-2024
 */
 
 
@@ -10,7 +10,6 @@ import SigninForm from "./signin_form";
 import { ComponentProps, withStreamlitConnection } from "streamlit-component-lib";
 import SignoutForm from "./signout_form";
 import ChangePasswordForm from "./change_password_form";
-import RegisterForm from "./register_form";
 
 
 const getComponent = (props: ComponentProps) => {
@@ -19,7 +18,6 @@ const getComponent = (props: ComponentProps) => {
         case 'signin': return (<SigninForm {...props} />)
         case 'signout': return (<SignoutForm {...props} />)
         case 'changePassword': return(<ChangePasswordForm {...props} />)
-        case 'register': return(<RegisterForm {...props} />)
         default: return (<div />)
     }
 }

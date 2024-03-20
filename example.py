@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, signinForm, signoutForm, changePasswordForm, registerForm
+from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, signinForm, signoutForm, changePasswordForm
 ss = st.session_state
 
 st.set_page_config(layout='wide')
@@ -28,7 +28,7 @@ signinForm(encryptor.publicKeyPem, configs={
     'labelSpan': 4,
     'username': {
         # 'label': 'Username',
-        'placeholder': 'Username',
+        # 'placeholder': 'Username Please',
         'patterns': [
             {'pattern': '^.*@example.com$', 'message': 'Must be example email'}
         ]
@@ -49,15 +49,6 @@ changePasswordForm(encryptor.publicKeyPem, configs={
     'type': 'inline',
     'title': {},
     'cancel': {},
-})
-
-registerForm(encryptor.publicKeyPem, configs={
-    'number': {
-        'type': 'number',
-        'defaultConfig': {
-            'placeholder': 'Number Please'
-        }
-    }
 })
 
 # def checkAuth(username: str, password: str):

@@ -1,24 +1,24 @@
 /*
 author: Nathan Chen
-date  : 15-Mar-2024
+date  : 20-Mar-2024
 */
 
 
 import React, { ComponentProps, ReactNode } from "react";
 import {
-  Form, Typography, Input, Checkbox, Space, Button,
+  Form, Input, Button,
   FormProps, Flex,
 } from "antd";
 import {
-  UserOutlined, LockOutlined, UnlockOutlined
+  LockOutlined, UnlockOutlined
 } from "@ant-design/icons"
 import BaseForm from "./base_form";
 import {
   FormType
 } from "./types"
 import {
-  FormConfig, TitleConfig, InputConfig, CheckboxConfig, ButtonConfig,
-  getConfig, getFormConfig, getTitleConfig, getInputConfig, getCheckboxConfig, getButtonConfig,
+  FormConfig, InputConfig, ButtonConfig,
+  getConfig, getFormConfig, getInputConfig,
 } from "./configs";
 
 

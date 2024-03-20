@@ -1,6 +1,6 @@
 /*
 author: Nathan Chen
-date  : 16-Mar-2024
+date  : 20-Mar-2024
 */
 
 
@@ -11,7 +11,7 @@ import {
 } from "antd";
 import BaseForm from "./base_form";
 import {
-  FormConfig, ButtonConfig,
+  FormConfig,
   getConfig, getFormConfig,
 } from "./configs";
 import { FormType } from "./types";

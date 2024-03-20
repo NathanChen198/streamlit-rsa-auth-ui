@@ -1,5 +1,5 @@
 # Author    : Nathan Chen
-# Date      : 15-Mar-2024
+# Date      : 20-Mar-2024
 
 
 import os
@@ -7,7 +7,7 @@ import streamlit.components.v1 as components
 from typing import Literal, Optional, Union, Any, Dict, overload
 
 
-_RELEASE = False
+_RELEASE = True
 
 
 if not _RELEASE:
@@ -58,11 +58,3 @@ def changePasswordForm(publicKey: None, default: Optional[Object] = None, config
 def changePasswordForm(publicKey: str, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[str]: pass
 def changePasswordForm(publicKey: Optional[str] = None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Union[Object, str, None]:
     return createComponent('changePassword', publicKey, default, configs)
-
-
-@overload
-def registerForm(publicKey: None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[Object]: pass
-@overload
-def registerForm(publicKey: str, default: Optional[Object] = None, configs: Optional[Object] = None) -> Optional[str]: pass
-def registerForm(publicKey: Optional[str] = None, default: Optional[Object] = None, configs: Optional[Object] = None) -> Union[Object, str, None]:
-    return createComponent('register', publicKey, default, configs)

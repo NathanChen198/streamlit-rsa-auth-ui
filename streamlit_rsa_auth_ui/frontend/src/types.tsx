@@ -1,6 +1,6 @@
 /*
 author: Nathan Chen
-date  : 12-Mar-2024
+date  : 20-Mar-2024
 */
 
 
@@ -39,22 +39,4 @@ export const getTitleSize = (size: any, defaultSize: TitleSize = TitleSize.mediu
     return size
   else
     return defaultSize
-}
-
-export enum InputType{
-  text = "text",
-  number = "number",
-  boolean = "boolean",
-  color = "color",
-  date = "date",
-  time = "time",
-  datetime = "datetime",
-  choose_one = "select_one",
-  choose_many = "select_many",
-}
-export const getInputType = (type: any) : InputType | undefined => {
-  if(typeof type === 'string')
-    return InputType[type as keyof typeof InputType]
-  else
-    return undefined
 }

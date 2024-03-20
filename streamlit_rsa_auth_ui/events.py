@@ -1,11 +1,11 @@
 # Author    : Nathan Chen
-# Date      : 11-Mar-2024
+# Date      : 20-Mar-2024
 
 
 from typing import Literal
 
 
-EventInfo = Literal['signin', 'cancelSignin', 'signout', 'cancelSignout']
+EventInfo = Literal['signin', 'cancelSignin', 'signout', 'cancelSignout', 'changePassword', 'cancelChangePassword']
 
 
 class Event:
@@ -42,6 +42,20 @@ class CancelSignoutEvent(Event):
     def __init__(self) -> None:
         super().__init__('cancelSignout')
 
+class ChangePasswordEvent(Event):
+    event: EventInfo = 'changePassword'
+
+    def __init__(self) -> None:
+        super().__init__('changePassword')
+
+class CancelChangePasswordEvent(Event):
+    event: EventInfo = 'cancelChangePassword'
+    current: str
+    new: str
+
+    def __init__(self) -> None:
+        super().__init__('cancelChangePassword')
+
 
 def getEvent(value):
     if type(value) is not dict: return None
@@ -55,6 +69,11 @@ def getEvent(value):
         event = SignoutEvent()
     elif info == CancelSignoutEvent.event:
         event = CancelSignoutEvent()
+    elif info == ChangePasswordEvent.event:
+        event = ChangePasswordEvent()
+        event.__dict__ = value
+    elif info == CancelChangePasswordEvent.event:
+        event = CancelChangePasswordEvent()
     else:
         event = None
 

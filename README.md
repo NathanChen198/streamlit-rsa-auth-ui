@@ -117,6 +117,10 @@ streamlit run example.py
 - Remove location setting(seem redundunt as if you want to add to any container/sidebar you can call with syntax)
 - Add in classname to frontend so that easier to add in custom styling if needed
 - Remove off the unnecessary excess height of streamlit
+### Version 1.0.0
+- More customizable UI
+- Add inline mode
+- Add ChangePassword UI
 
 
 
