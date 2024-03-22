@@ -1,6 +1,6 @@
 {
     "name": "rsa_auth_ui",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "dependencies": {
         "antd": "^5.15.1",

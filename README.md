@@ -60,31 +60,28 @@ this will create a private key and public key pair
 Create a new file example.py
 ``` python
 import streamlit as st
-from streamlit_rsa_auth_ui import Encryptor, SigninEvent, getEvent, signinForm, signoutForm
+from streamlit_rsa_auth_ui import Encryptor, authUI, SigninEvent, SigninFormConfig, getEvent
 ss = st.session_state
 
-
 encryptor = Encryptor.load('rsa', 'authkey')
+ui = authUI('login_ui_result', encryptor.publicKeyPem)
 
 def checkAuth(username: str, password: str):
     return username == 'test' and password == 'New.Prog'
 
 def login():
     if 'event' in ss and type(ss.event) is SigninEvent: return True
-    result = signinForm(encryptor.publicKeyPem, default={'remember': True}, configs={'remember': {}})
-    if result is None: return False
-    if 'result' in ss and ss['result'] == result: return False
+    result = ui.signinForm(default={'remember': True}, configs=SigninFormConfig(remember="Rememeber Me"))
+    if result is None: return None
 
-    ss['result'] = result
     _dict = encryptor.decrypt(result)
     event = getEvent(_dict)
     if type(event) is not SigninEvent or not checkAuth(event.username, event.password): return False
     ss['event'] = event
-    del ss['result']
     st.rerun()
 
 def logout():
-    result = signoutForm(encryptor.publicKeyPem)
+    result = ui.signoutForm()
     if result is None: return False
     _dict = encryptor.decrypt(result)
     event = getEvent(_dict)
@@ -92,10 +89,12 @@ def logout():
     return True
 
 if not login(): st.stop()
-if logout(): st.rerun()
+with st.sidebar:
+    if logout(): st.rerun()
 
 st.title('Streamlit Rsa Auth UI Test')
-st.button('test')
+button = st.button('test')
+button
 ```
 
 Run the streamlit app
@@ -121,6 +120,10 @@ streamlit run example.py
 - More customizable UI
 - Add inline mode
 - Add ChangePassword UI
+### Version 1.1.0
+- Add id property in event if no public key is provided
+- Add AuthUI class
+- Add Configs class
 
 
 

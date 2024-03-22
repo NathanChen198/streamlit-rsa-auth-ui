@@ -1,110 +1,39 @@
 import streamlit as st
-from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, signinForm, signoutForm, changePasswordForm
+from streamlit_rsa_auth_ui import Encryptor, SigninEvent, SignoutEvent, getEvent, authUI, TitleConfig, RequiredRule, PatternRule, TextInputConfig, CheckboxConfig, ButtonConfig, IconConfig, SigninFormConfig
 ss = st.session_state
 
 st.set_page_config(layout='wide')
 
-encryptor = Encryptor.load('rsa', 'key')
+encryptor = Encryptor.load('rsa', 'authkey')
+ui = authUI('login_ui_result', encryptor.publicKeyPem)
 with st.sidebar:
-    signoutForm(encryptor.publicKeyPem, configs={
-        # 'align': 'left',
+    ui.signoutForm(configs={
         'title': {
             'text': 'Welcome Chen, Nathan',
             'size': 'smaller',
-            # 'align': 'center'
         },
-        # 'cancel': {}
     })
+    st.session_state
 
-signinForm(encryptor.publicKeyPem, configs={
-    'type': 'inline',
-    'title': {
-        # 'align': 'center'
-    },
-    'cancel': {},
-    'forgot': {},
-    'remember': {},
-    # 'maxWidth': 500,
-    'labelSpan': 4,
-    'username': {
-        # 'label': 'Username',
-        # 'placeholder': 'Username Please',
-        'patterns': [
-            {'pattern': '^.*@example.com$', 'message': 'Must be example email'}
-        ]
-    },
-    'password': {
-        # 'label': 'Password',
-        'placeholder': 'Password'
-    },
-    # 'align': 'center',
-    'style': {
-        # 'maxWidth': 500,
-        'marginLeft': 'auto',
-        'marginRight': 'auto'
-    }
-})
+event = SigninEvent()
+event.remember = False
+ui.signinForm(
+    configs= SigninFormConfig('inline',
+        title='Test Login',
+        username=TextInputConfig('Username please', required=False),
+        password='Password please',
+        remember='Remember',
+        forgot='Forgot Password'
+        ),
+    default=event.__dict__)
+st.session_state
 
-changePasswordForm(encryptor.publicKeyPem, configs={
+ui.changePasswordForm(configs={
     'type': 'inline',
     'title': {},
     'cancel': {},
 })
+st.session_state
 
-# def checkAuth(username: str, password: str):
-#     return username == 'test' and password == 'New.Prog'
-
-# def login():
-#     if 'event' in ss and type(ss.event) is SigninEvent: return True
-#     result = signinForm(encryptor.publicKeyPem, default={'remember': True}, configs={
-#         'title': {
-#             'text': 'Login',
-#             'align': 'left'
-#         },
-#         # 'cancel': {},
-#         'username': {
-#             # 'label': 'Username',
-#             'patterns': [{ 'pattern': '^.*@illumina.com$', 'message': 'Must be illumina email' }],
-#             # 'width': 200,
-#         },
-#         'password': {
-#             # 'label': 'Password'
-#         },
-#         # 'labelSpan': 10,
-#         # 'remember': {},
-#         # 'forgot': {},
-#         # 'size': 'small',
-#         # 'maxWidth': 500,
-#         'type': 'inline',
-#         # 'align': 'center',
-#         # 'style': {
-#         #     'margin': 'auto',
-#         #     # 'maxWidth': 400
-#         # }
-#     })
-#     if result is None: return False
-#     if 'result' in ss and ss['result'] == result: return False
-
-#     ss['result'] = result
-#     _dict = encryptor.decrypt(result)
-#     event = getEvent(_dict)
-#     if type(event) is not SigninEvent or not checkAuth(event.username, event.password): return False
-#     ss['event'] = event
-#     del ss['result']
-#     st.rerun()
-
-# def logout():
-#     result = signoutForm(encryptor.publicKeyPem, configs={'cancel': {}})
-#     if result is None: return False
-#     _dict = encryptor.decrypt(result)
-#     event = getEvent(_dict)
-#     if type(event) is SignoutEvent:
-#         del ss['event']
-#         return True
-#     return False
-
-# if not login(): st.stop()
-# if logout(): st.rerun()
-
-# st.title('Streamlit Rsa Auth UI Test')
-# st.button('test')
+button = st.button('Test')
+button

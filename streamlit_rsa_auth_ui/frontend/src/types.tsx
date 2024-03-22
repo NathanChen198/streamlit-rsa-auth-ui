@@ -1,6 +1,6 @@
 /*
 author: Nathan Chen
-date  : 20-Mar-2024
+date  : 23-Mar-2024
 */
 
 
@@ -13,14 +13,6 @@ export enum HorizontalAlignment{
   left = 'left',
   right = 'right',
   center = 'center'
-}
-
-export enum TextAlign{
-  left = 'left',
-  right = 'right',
-  center = 'center',
-  justify = 'justify',
-  matchParent = 'match-parent'
 }
 export const getTextAlign = (align: any, defaultAlign: HorizontalAlignment = HorizontalAlignment.left) : HorizontalAlignment =>
   (typeof align === 'string') ? HorizontalAlignment[align as keyof typeof HorizontalAlignment] : defaultAlign

@@ -1,6 +1,6 @@
 /*
 author: Nathan Chen
-date  : 20-Mar-2024
+date  : 23-Mar-2024
 */
 
 
@@ -42,6 +42,7 @@ export default abstract class BaseForm extends StreamlitComponentBase{
 
   protected setComponentValue(value: any){
     if (!this.publicKey){
+      value.id = Math.random()
       Streamlit.setComponentValue(value)
     }
     else{
